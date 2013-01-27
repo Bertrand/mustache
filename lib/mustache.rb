@@ -105,7 +105,7 @@ class Mustache
   #   @view.render(:thing => :world)
   #
   # Returns a rendered String version of a template
-  def render(data = template, ctx = {})
+  def render(data = template, ctx = {}, helpers = {})
     if data.is_a? Hash
       ctx = data
       tpl = templateify(template)
@@ -189,6 +189,27 @@ class Mustache
   # Returns a String
   def escapeHTML(str)
     CGI.escapeHTML(str)
+  end
+
+
+  def helpers_by_name
+    @helpers_by_name ||= {}
+  end
+
+  def add_helper(name, lambda)
+    self.helpers_by_name[name] = lambda
+  end
+
+  def remove_helper(name)
+    self.helpers_by_name.delete(name)
+  end
+
+  def self.helpers_by_name
+    {}
+  end
+
+  def helper(name)
+    self.helpers_by_name[name] || self.class.helpers_by_name[name] || raise("Helper '#{name}' not provided in context.")
   end
 
 

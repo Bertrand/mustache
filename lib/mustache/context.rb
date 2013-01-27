@@ -47,6 +47,10 @@ class Mustache
       mustache_in_stack.escapeHTML(str)
     end
 
+    def helper(name)
+      mustache_in_stack.helper(name)
+    end
+
     # Adds a new object to the context's internal stack.
     #
     # Returns the Context.

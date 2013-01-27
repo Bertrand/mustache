@@ -132,14 +132,31 @@ EOF
       if ANY_CONTENT.include?(type)
         r = /\s*#{regexp(type)}?#{regexp(current_ctag)}/
         content = scan_until_exclusive(r)
+      elsif type.nil?
+        r = /\s*#{regexp(current_ctag)}/
+        content = scan_until_exclusive(r)
+        look_for_helper = true
+      elsif type == "{"
+        r = /\s*#{regexp(type)}?#{regexp(current_ctag)}/
+        content = scan_until_exclusive(r)
+        look_for_helper = true
       else
         content = @scanner.scan(ALLOWED_CONTENT)
+      end
+
+      if look_for_helper then 
+        content_elements = content.gsub(/ +/, ' ').split(' ')
+        if (content_elements.size > 1) then 
+          content = content_elements[1]
+          content_elements.delete_at(1)
+          helper_info = content_elements
+        end
       end
 
       # We found {{ but we can't figure out what's going on inside.
       error "Illegal content in tag" if content.empty?
 
-      fetch = [:mustache, :fetch, content.split('.')]
+      fetch = [:mustache, :fetch, content.split('.'), helper_info]
       prev = @result
 
       # Based on the sigil, do what needs to be done.

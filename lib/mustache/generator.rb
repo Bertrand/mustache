@@ -165,10 +165,10 @@ class Mustache
       compiled
     end
 
-    def on_fetch(names)
+    def on_fetch(names, helper_info)
       names = names.map { |n| n.to_sym }
 
-      if names.length == 0
+      raw = if names.length == 0
         "ctx[:to_s]"
       elsif names.length == 1
         "ctx[#{names.first.to_sym.inspect}]"
@@ -179,6 +179,13 @@ class Mustache
             value && ctx.find(value, key)
           }
         compiled
+      end
+
+      if (helper_info) then 
+        helper_name = helper_info[0]
+        "ctx.helper('#{helper_name}'.to_sym).call(#{raw})"
+      else
+        raw
       end
     end
 
