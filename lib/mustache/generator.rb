@@ -161,11 +161,11 @@ class Mustache
         if v.is_a?(Proc)
           v = Mustache::Template.new(v.call.to_s).render(ctx.dup)
         end
-        ctx.escapeHTML(v.to_s)
+        v.is_a?(::Mustache::SafeString) ? v : ctx.escapeHTML(v.to_s)
       compiled
     end
 
-    def on_fetch(names, helper_info)
+    def on_fetch(names, helper_info = nil)
       names = names.map { |n| n.to_sym }
 
       raw = if names.length == 0

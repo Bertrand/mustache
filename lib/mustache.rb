@@ -1,6 +1,7 @@
 require 'mustache/template'
 require 'mustache/context'
 require 'mustache/settings'
+require 'mustache/safe_string'
 
 # Mustache is the base class from which your Mustache subclasses
 # should inherit (though it can be used on its own).
@@ -105,7 +106,7 @@ class Mustache
   #   @view.render(:thing => :world)
   #
   # Returns a rendered String version of a template
-  def render(data = template, ctx = {}, helpers = {})
+  def render(data = template, ctx = {})
     if data.is_a? Hash
       ctx = data
       tpl = templateify(template)

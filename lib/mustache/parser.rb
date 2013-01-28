@@ -156,7 +156,8 @@ EOF
       # We found {{ but we can't figure out what's going on inside.
       error "Illegal content in tag" if content.empty?
 
-      fetch = [:mustache, :fetch, content.split('.'), helper_info]
+      fetch = [:mustache, :fetch, content.split('.')]
+      fetch << helper_info if helper_info
       prev = @result
 
       # Based on the sigil, do what needs to be done.
