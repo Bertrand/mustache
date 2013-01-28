@@ -680,11 +680,13 @@ template
 
   def test_helpers_returning_safestring
     m = Mustache.new 
-    m.add_helper(:bold, lambda { |content| ::Mustache::SafeString.new("<bold>#{content}</bold>") })
-    m.add_helper(:escaped_bold, lambda { |content| "<bold>#{content}</bold>" })
+    m.add_helper(:bold, lambda { |content, property_path| ::Mustache::SafeString.new("<bold>#{content}+#{property_path}</bold>") })
+    m.add_helper(:escaped_bold, lambda { |content, property_path| "<bold>#{content}</bold>" })
 
-    assert_equal "<bold>str</bold>", m.render("{{bold str}}", :str => "str")
-    assert_equal "&lt;bold&gt;str&lt;/bold&gt;", m.render("{{escaped_bold str}}", :str => "str")
+    model = {:root => {:str => "str"}}
+    #model = {:str => "str"}
+    assert_equal "<bold>str+root.str</bold>", m.render("{{bold root.str}}", model)
+    assert_equal "&lt;bold&gt;str&lt;/bold&gt;", m.render("{{escaped_bold root.str}}", model)
     
   end
 end

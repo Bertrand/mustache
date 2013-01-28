@@ -183,7 +183,8 @@ class Mustache
 
       if (helper_info) then 
         helper_name = helper_info[0]
-        "ctx.helper('#{helper_name}'.to_sym).call(#{raw})"
+        quoted_name = "%!#{names.join('.')}!"
+        "ctx.helper('#{helper_name}'.to_sym).call((#{raw}),#{quoted_name})"
       else
         raw
       end
